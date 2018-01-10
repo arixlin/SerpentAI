@@ -100,7 +100,13 @@ class DQN:
         self.frame_stack = frame_stack.reshape((1,) + frame_stack.shape)
 
     def update_frame_stack(self, game_frame_buffer):
-        game_frames = [game_frame.frame for game_frame in game_frame_buffer.frames]
+        game_frames = []
+        for game_frame in game_frame_buffer.frames:
+            if(np.shape(game_frame.frame)[2] == 3):
+                game_frames.append(game_frame.frame[:, :, 0])
+            else:
+                game_frames.append(game_frame.frame)
+        # game_frames = [game_frame.frame for game_frame in game_frame_buffer.frames]
         frame_stack = np.stack(game_frames, axis=2)
 
         self.frame_stack = frame_stack.reshape((1,) + frame_stack.shape)
