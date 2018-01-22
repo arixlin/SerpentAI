@@ -8,6 +8,7 @@ from keras.layers import Dense, Flatten, Convolution2D, MaxPooling2D, AveragePoo
 from keras.optimizers import Adam, rmsprop
 
 import numpy as np
+import cv2
 
 import random
 import itertools
@@ -99,11 +100,14 @@ class DQN:
 
         self.frame_stack = frame_stack.reshape((1,) + frame_stack.shape)
 
-    def update_frame_stack(self, game_frame_buffer):
+    def update_frame_stack(self, game_frame_buffer, width, height):
         game_frames = []
         for game_frame in game_frame_buffer.frames:
             if(np.shape(game_frame.frame)[2] == 3):
-                game_frames.append(game_frame.frame[:, :, 0])
+                image = game_frame.frame
+                image = cv2.resize(image, (width, height), interpolation=cv2.INTER_CUBIC)
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                game_frames.append(image)
             else:
                 game_frames.append(game_frame.frame)
         # game_frames = [game_frame.frame for game_frame in game_frame_buffer.frames]
